@@ -16,6 +16,7 @@ module.exports = {
     body: {
       numberOfCase: Joi.number().required(),
       numberOfDeath: Joi.number().required(),
+      numberOfRecovered: Joi.number().required(),
       location: Joi.string().required(),
       date: Joi.date().required(),
     },

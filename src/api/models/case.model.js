@@ -16,6 +16,10 @@ const caseSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  numberOfRecovered: {
+    type: Number,
+    required: true,
+  },
   location: {
     type: String,
     required: true,
@@ -66,9 +70,9 @@ caseSchema.statics = {
    * @returns {Promise<Case[]>}
    */
   list({
-    page = 1, perPage = 30, location,
+    page = 1, perPage = 30, location, date
   }) {
-    const options = omitBy({ location }, isNil);
+    const options = omitBy({ location, date }, isNil);
 
     return this.find(options)
       .sort({ createdAt: -1 })
