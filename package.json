@@ -77,7 +77,8 @@
     "uuid": "^3.1.0",
     "winston": "^3.1.0",
     "apidoc": "^0.17.5",
-    "opn-cli": "^5.0.0"
+    "opn-cli": "^5.0.0",
+    "nodemon": "^2.0.1"
   },
   "devDependencies": {    
     "chai": "^4.1.0",
@@ -87,8 +88,7 @@
     "eslint-config-airbnb-base": "^12.0.1",
     "eslint-plugin-import": "^2.2.0",
     "husky": "^3.0.7",
-    "mocha": "^6.2.2",
-    "nodemon": "^2.0.1",
+    "mocha": "^6.2.2",    
     "nyc": "^14.1.1",    
     "sinon": "^7.5.0",
     "sinon-chai": "^3.0.0",
