@@ -21,7 +21,7 @@ exports.create = async (req, res, next) => {
     const caseData = new Case(req.body);
     const savedCase = await caseData.save();
     res.status(httpStatus.CREATED);
-    res.json(savedCase.transform());
+    res.json(savedCase);
   } catch (error) {
     next(error);
   }
