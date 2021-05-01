@@ -15,6 +15,7 @@ module.exports = {
   createCase: {
     body: {
       numberOfCase: Joi.number().required(),
+      numberOfDeath: Joi.number().required(),
       location: Joi.string().required(),
       date: Joi.date().required(),
     },
