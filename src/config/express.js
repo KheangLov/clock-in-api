@@ -17,6 +17,7 @@ const error = require('../api/middlewares/error');
 */
 const app = express();
 
+app.use(express.static('public'));
 // request logging. dev: console | production: file
 app.use(morgan(logs));
 

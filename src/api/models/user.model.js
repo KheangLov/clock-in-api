@@ -38,6 +38,24 @@ const userSchema = new mongoose.Schema({
     index: true,
     trim: true,
   },
+  nationality: {
+    type: String,
+    maxlength: 64,
+    trim: true,
+  },
+  dob: {
+    type: Date,
+  },
+  address: {
+    type: String,
+    maxlength: 255,
+    trim: true,
+  },
+  phone: {
+    type: String,
+    maxlength: 32,
+    trim: true,
+  },
   services: {
     facebook: String,
     google: String,
@@ -103,6 +121,7 @@ userSchema.method({
   async passwordMatches(password) {
     return bcrypt.compare(password, this.password);
   },
+
 });
 
 /**

@@ -67,8 +67,10 @@ exports.update = async (req, res, next) => {
  */
 exports.list = async (req, res, next) => {
   try {
-    const caseData = await Case.list(req.query);
-    res.json(caseData);
+    const data = await Case.list(req.query);
+    const totalEntries = await Case.count();
+    const totalPages = Math.ceil(totalEntries / req.query.perPage || 10);
+    res.json({ data, totalEntries, totalPages });
   } catch (error) {
     next(error);
   }

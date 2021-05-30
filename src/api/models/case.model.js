@@ -71,7 +71,7 @@ caseSchema.statics = {
    * @returns {Promise<Case[]>}
    */
   list({
-    page = 1, perPage = 30, location, date
+    page = 1, perPage = 30, location, date,
   }) {
     const options = omitBy({ location, date }, isNil);
 

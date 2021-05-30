@@ -8,6 +8,7 @@ const {
   replaceUser,
   updateUser,
 } = require('../../validations/user.validation');
+const { uploadImage } = require('../../services/uploadProviders');
 
 const router = express.Router();
 
@@ -90,6 +91,11 @@ router
    * @apiError (Unauthorized 401)  Unauthorized  Only authenticated Users can access the data
    */
   .get(authorize(), controller.loggedIn);
+
+
+router
+  .route('/upload-profile/:userId')
+  .post(authorize(LOGGED_USER), uploadImage.single('profile'), controller.uploadProfile);
 
 
 router

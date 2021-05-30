@@ -43,6 +43,13 @@ exports.create = async (req, res, next) => {
   }
 };
 
+exports.uploadProfile = (req, res, next) => {
+  const user = Object.assign(req.locals.user, { picture: `/profiles/${req.file.filename}` });
+  user.save()
+    .then(savedUser => res.json(savedUser.transform()))
+    .catch(e => next(e));
+};
+
 /**
  * Replace existing user
  * @public
