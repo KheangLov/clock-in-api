@@ -74,12 +74,13 @@ caseSchema.statics = {
     page = 1, perPage = 30, location, date,
   }) {
     const options = omitBy({ location, date }, isNil);
+    const data = this.find(options).sort({ createdAt: -1 });
 
-    return this.find(options)
-      .sort({ createdAt: -1 })
-      .skip(perPage * (page - 1))
-      .limit(perPage)
-      .exec();
+    if (perPage > 0) {
+      data.skip(perPage * (page - 1)).limit(perPage);
+    }
+
+    return data.exec();
   },
 
 };

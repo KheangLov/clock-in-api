@@ -6,7 +6,7 @@ module.exports = {
   listCases: {
     query: {
       page: Joi.number().min(1),
-      perPage: Joi.number().min(1).max(100),
+      perPage: Joi.number().max(100),
       location: Joi.string(),
     },
   },
