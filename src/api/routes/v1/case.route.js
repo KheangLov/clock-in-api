@@ -14,47 +14,43 @@ const router = express.Router();
 router
   .route('/')
   /**
-   * @api {get} v1/users List Users
-   * @apiDescription Get a list of users
+   * @api {get} v1/cases List Cases
+   * @apiDescription Get a list of cases
    * @apiVersion 1.0.0
-   * @apiName ListUsers
-   * @apiGroup User
-   * @apiPermission admin
-   *
-   * @apiHeader {String} Authorization   User's access token
+   * @apiName ListCases
+   * @apiGroup Case
+   * @apiPermission public
    *
    * @apiParam  {Number{1-}}         [page=1]     List page
-   * @apiParam  {Number{1-100}}      [perPage=1]  Users per page
-   * @apiParam  {String}             [name]       User's name
-   * @apiParam  {String}             [email]      User's email
-   * @apiParam  {String=user,admin}  [role]       User's role
+   * @apiParam  {Number{1-100}}      [perPage=1]  Cases per page
+   * @apiParam  {String}             [location]   Case's location
+   * @apiParam  {Date}               [date]       Case's email
    *
-   * @apiSuccess {Object[]} users List of users.
+   * @apiSuccess {Object[]} cases List of cases.
    *
-   * @apiError (Unauthorized 401)  Unauthorized  Only authenticated users can access the data
-   * @apiError (Forbidden 403)     Forbidden     Only admins can access the data
    */
   .get(validate(listCases), controller.list)
   /**
-   * @api {post} v1/users Create User
-   * @apiDescription Create a new user
+   * @api {post} v1/cases Create Case
+   * @apiDescription Create a new case
    * @apiVersion 1.0.0
-   * @apiName CreateUser
-   * @apiGroup User
+   * @apiName CreateCase
+   * @apiGroup Case
    * @apiPermission admin
    *
    * @apiHeader {String} Authorization   User's access token
    *
-   * @apiParam  {String}             email     User's email
-   * @apiParam  {String{6..128}}     password  User's password
-   * @apiParam  {String{..128}}      [name]    User's name
-   * @apiParam  {String=user,admin}  [role]    User's role
+   * @apiParam  {Number}  numberOfCase         Case's numberOfCase
+   * @apiParam  {Number}  numberOfDeath        Case's numberOfDeath
+   * @apiParam  {Number}  numberOfRecovered    Case's numberOfDeath
+   * @apiParam  {Number}  location             Case's location
+   * @apiParam  {Date}    date                 Case's date
    *
-   * @apiSuccess (Created 201) {String}  id         User's id
-   * @apiSuccess (Created 201) {String}  name       User's name
-   * @apiSuccess (Created 201) {String}  email      User's email
-   * @apiSuccess (Created 201) {String}  role       User's role
-   * @apiSuccess (Created 201) {Date}    createdAt  Timestamp
+   * @apiSuccess (Created 201) {String}  numberOfCase         Case's numberOfCase
+   * @apiSuccess (Created 201) {String}  numberOfDeath        Case's numberOfDeath
+   * @apiSuccess (Created 201) {String}  numberOfRecovered    Case's numberOfRecovered
+   * @apiSuccess (Created 201) {String}  location             Case's location
+   * @apiSuccess (Created 201) {Date}    date                 Case's date
    *
    * @apiError (Bad Request 400)   ValidationError  Some parameters may contain invalid values
    * @apiError (Unauthorized 401)  Unauthorized     Only authenticated users can create the data
@@ -66,87 +62,84 @@ router
   .route('/:id')
   /**
    * @api {get} v1/cases/:id Get Case
-   * @apiDescription Get user information
+   * @apiDescription Get case information
    * @apiVersion 1.0.0
-   * @apiName GetUser
-   * @apiGroup User
-   * @apiPermission user
+   * @apiName GetCase
+   * @apiGroup Case
+   * @apiPermission public
    *
-   * @apiHeader {String} Authorization   User's access token
+   * @apiSuccess {String}  numberOfCase         Case's numberOfCase
+   * @apiSuccess {String}  numberOfDeath        Case's numberOfDeath
+   * @apiSuccess {String}  numberOfRecovered    Case's numberOfRecovered
+   * @apiSuccess {String}  location             Case's location
+   * @apiSuccess {Date}    date                 Case's date
    *
-   * @apiSuccess {String}  id         User's id
-   * @apiSuccess {String}  name       User's name
-   * @apiSuccess {String}  email      User's email
-   * @apiSuccess {String}  role       User's role
-   * @apiSuccess {Date}    createdAt  Timestamp
-   *
-   * @apiError (Unauthorized 401) Unauthorized Only authenticated users can access the data
-   * @apiError (Forbidden 403)    Forbidden    Only user with same id or admins can access the data
-   * @apiError (Not Found 404)    NotFound     User does not exist
+   * @apiError (Forbidden 403)    Forbidden    Only case with same id
+   * @apiError (Not Found 404)    NotFound     Case does not exist
    */
   .get(controller.get)
   /**
-   * @api {put} v1/users/:id Replace User
-   * @apiDescription Replace the whole user document with a new one
+   * @api {put} v1/cases/:id Replace Case
+   * @apiDescription Replace the whole case document with a new one
    * @apiVersion 1.0.0
-   * @apiName ReplaceUser
-   * @apiGroup User
+   * @apiName ReplaceCase
+   * @apiGroup Case
    * @apiPermission user
    *
    * @apiHeader {String} Authorization   User's access token
    *
-   * @apiParam  {String}             email     User's email
-   * @apiParam  {String{6..128}}     password  User's password
-   * @apiParam  {String{..128}}      [name]    User's name
-   * @apiParam  {String=user,admin}  [role]    User's role
-   * (You must be an admin to change the user's role)
+   * @apiParam  {Number}  numberOfCase         Case's numberOfCase
+   * @apiParam  {Number}  numberOfDeath        Case's numberOfDeath
+   * @apiParam  {Number}  numberOfRecovered    Case's numberOfDeath
+   * @apiParam  {Number}  location             Case's location
+   * @apiParam  {Date}    date                 Case's date
    *
-   * @apiSuccess {String}  id         User's id
-   * @apiSuccess {String}  name       User's name
-   * @apiSuccess {String}  email      User's email
-   * @apiSuccess {String}  role       User's role
-   * @apiSuccess {Date}    createdAt  Timestamp
+   * @apiSuccess {String}  numberOfCase         Case's numberOfCase
+   * @apiSuccess {String}  numberOfDeath        Case's numberOfDeath
+   * @apiSuccess {String}  numberOfRecovered    Case's numberOfRecovered
+   * @apiSuccess {String}  location             Case's location
+   * @apiSuccess {Date}    date                 Case's date
    *
    * @apiError (Bad Request 400)  ValidationError  Some parameters may contain invalid values
    * @apiError (Unauthorized 401) Unauthorized Only authenticated users can modify the data
-   * @apiError (Forbidden 403)    Forbidden    Only user with same id or admins can modify the data
-   * @apiError (Not Found 404)    NotFound     User does not exist
+   * @apiError (Forbidden 403)    Forbidden    Only case with same id or admins can modify the data
+   * @apiError (Not Found 404)    NotFound     Case does not exist
    */
   .put(authorize(LOGGED_USER), validate(replaceCase), controller.replace)
   /**
-   * @api {patch} v1/users/:id Update User
-   * @apiDescription Update some fields of a user document
+   * @api {patch} v1/cases/:id Update Case
+   * @apiDescription Update some fields of a case document
    * @apiVersion 1.0.0
-   * @apiName UpdateUser
-   * @apiGroup User
+   * @apiName UpdateCase
+   * @apiGroup Case
    * @apiPermission user
    *
    * @apiHeader {String} Authorization   User's access token
    *
-   * @apiParam  {String}             email     User's email
-   * @apiParam  {String{6..128}}     password  User's password
-   * @apiParam  {String{..128}}      [name]    User's name
-   * @apiParam  {String=user,admin}  [role]    User's role
-   * (You must be an admin to change the user's role)
+   * @apiParam  {Number}  numberOfCase         Case's numberOfCase
+   * @apiParam  {Number}  numberOfDeath        Case's numberOfDeath
+   * @apiParam  {Number}  numberOfRecovered    Case's numberOfDeath
+   * @apiParam  {Number}  location             Case's location
+   * @apiParam  {Date}    date                 Case's date
    *
-   * @apiSuccess {String}  id         User's id
-   * @apiSuccess {String}  name       User's name
-   * @apiSuccess {String}  email      User's email
-   * @apiSuccess {String}  role       User's role
-   * @apiSuccess {Date}    createdAt  Timestamp
+   * @apiSuccess {String}  numberOfCase         Case's numberOfCase
+   * @apiSuccess {String}  numberOfDeath        Case's numberOfDeath
+   * @apiSuccess {String}  numberOfRecovered    Case's numberOfRecovered
+   * @apiSuccess {String}  location             Case's location
+   * @apiSuccess {Date}    date                 Case's date
    *
    * @apiError (Bad Request 400)  ValidationError  Some parameters may contain invalid values
    * @apiError (Unauthorized 401) Unauthorized Only authenticated users can modify the data
-   * @apiError (Forbidden 403)    Forbidden    Only user with same id or admins can modify the data
-   * @apiError (Not Found 404)    NotFound     User does not exist
+   * @apiError (Forbidden 403)    Forbidden    Only case with same id or admins can modify the data
+   * @apiError (Not Found 404)    NotFound     Case does not exist
    */
   .patch(authorize(LOGGED_USER), validate(updateCase), controller.update)
   /**
-   * @api {patch} v1/users/:id Delete User
-   * @apiDescription Delete a user
+   * @api {patch} v1/cases/:id Delete Case
+   * @apiDescription Delete a case
    * @apiVersion 1.0.0
-   * @apiName DeleteUser
-   * @apiGroup User
+   * @apiName DeleteCase
+   * @apiGroup Case
    * @apiPermission user
    *
    * @apiHeader {String} Authorization   User's access token
@@ -154,8 +147,8 @@ router
    * @apiSuccess (No Content 204)  Successfully deleted
    *
    * @apiError (Unauthorized 401) Unauthorized  Only authenticated users can delete the data
-   * @apiError (Forbidden 403)    Forbidden     Only user with same id or admins can delete the data
-   * @apiError (Not Found 404)    NotFound      User does not exist
+   * @apiError (Forbidden 403)    Forbidden     Only case with same id or admins can delete the data
+   * @apiError (Not Found 404)    NotFound      Case does not exist
    */
   .delete(authorize(LOGGED_USER), controller.remove);
 
