@@ -22,6 +22,7 @@ module.exports = {
         .required(),
       password: Joi.string()
         .required()
+        .min(6)
         .max(128),
     },
   },
