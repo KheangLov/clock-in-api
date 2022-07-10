@@ -1,5 +1,6 @@
 const express = require('express');
 const validate = require('express-validation');
+
 const controller = require('../../controllers/auth.controller');
 const oAuthLogin = require('../../middlewares/auth').oAuth;
 const {
@@ -14,7 +15,7 @@ const {
 const router = express.Router();
 
 /**
- * @api {post} v1/auth/register Register
+ * @api {post} api/v1/auth/register Register
  * @apiDescription Register a new user
  * @apiVersion 1.0.0
  * @apiName Register
@@ -45,7 +46,7 @@ router.route('/register')
 
 
 /**
- * @api {post} v1/auth/login Login
+ * @api {post} api/v1/auth/login Login
  * @apiDescription Get an accessToken
  * @apiVersion 1.0.0
  * @apiName Login
@@ -76,7 +77,7 @@ router.route('/login')
 
 
 /**
- * @api {post} v1/auth/refresh-token Refresh Token
+ * @api {post} api/v1/auth/refresh-token Refresh Token
  * @apiDescription Refresh expired accessToken
  * @apiVersion 1.0.0
  * @apiName RefreshToken
@@ -97,7 +98,6 @@ router.route('/login')
 router.route('/refresh-token')
   .post(validate(refresh), controller.refresh);
 
-
 router.route('/send-password-reset')
   .post(validate(sendPasswordReset), controller.sendPasswordReset);
 
@@ -105,7 +105,7 @@ router.route('/reset-password')
   .post(validate(passwordReset), controller.resetPassword);
 
 /**
- * @api {post} v1/auth/facebook Facebook Login
+ * @api {post} api/v1/auth/facebook Facebook Login
  * @apiDescription Login with facebook. Creates a new user if it does not exist
  * @apiVersion 1.0.0
  * @apiName FacebookLogin
@@ -126,7 +126,7 @@ router.route('/facebook')
   .post(validate(oAuth), oAuthLogin('facebook'), controller.oAuth);
 
 /**
- * @api {post} v1/auth/google Google Login
+ * @api {post} api/v1/google Google Login
  * @apiDescription Login with google. Creates a new user if it does not exist
  * @apiVersion 1.0.0
  * @apiName GoogleLogin

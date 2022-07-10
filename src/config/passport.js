@@ -1,6 +1,6 @@
-const JwtStrategy = require('passport-jwt').Strategy;
 const BearerStrategy = require('passport-http-bearer');
-const { ExtractJwt } = require('passport-jwt');
+const { ExtractJwt, Strategy: JwtStrategy } = require('passport-jwt');
+
 const { jwtSecret } = require('./vars');
 const authProviders = require('../api/services/authProviders');
 const User = require('../api/models/user.model');

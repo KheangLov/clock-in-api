@@ -1,5 +1,6 @@
 const express = require('express');
 const validate = require('express-validation');
+
 const controller = require('../../controllers/user.controller');
 const { authorize, ADMIN, LOGGED_USER } = require('../../middlewares/auth');
 const {
@@ -7,6 +8,7 @@ const {
   createUser,
   replaceUser,
   updateUser,
+  changePassword,
 } = require('../../validations/user.validation');
 const { uploadImage } = require('../../services/uploadProviders');
 
@@ -21,7 +23,7 @@ router.param('userId', controller.load);
 router
   .route('/')
   /**
-   * @api {get} v1/users List Users
+   * @api {get} api/v1/users List Users
    * @apiDescription Get a list of users
    * @apiVersion 1.0.0
    * @apiName ListUsers
@@ -43,7 +45,7 @@ router
    */
   .get(authorize(ADMIN), validate(listUsers), controller.list)
   /**
-   * @api {post} v1/users Create User
+   * @api {post} api/v1/users Create User
    * @apiDescription Create a new user
    * @apiVersion 1.0.0
    * @apiName CreateUser
@@ -73,7 +75,7 @@ router
 router
   .route('/profile')
   /**
-   * @api {get} v1/users/profile User Profile
+   * @api {get} api/v1/users/profile User Profile
    * @apiDescription Get logged in user profile information
    * @apiVersion 1.0.0
    * @apiName UserProfile
@@ -101,7 +103,7 @@ router
 router
   .route('/:userId')
   /**
-   * @api {get} v1/users/:id Get User
+   * @api {get} api/v1/users/:id Get User
    * @apiDescription Get user information
    * @apiVersion 1.0.0
    * @apiName GetUser
@@ -122,7 +124,7 @@ router
    */
   .get(authorize(LOGGED_USER), controller.get)
   /**
-   * @api {put} v1/users/:id Replace User
+   * @api {put} api/v1/users/:id Replace User
    * @apiDescription Replace the whole user document with a new one
    * @apiVersion 1.0.0
    * @apiName ReplaceUser
@@ -150,7 +152,7 @@ router
    */
   .put(authorize(LOGGED_USER), validate(replaceUser), controller.replace)
   /**
-   * @api {patch} v1/users/:id Update User
+   * @api {patch} api/v1/users/:id Update User
    * @apiDescription Update some fields of a user document
    * @apiVersion 1.0.0
    * @apiName UpdateUser
@@ -178,7 +180,7 @@ router
    */
   .patch(authorize(LOGGED_USER), validate(updateUser), controller.update)
   /**
-   * @api {patch} v1/users/:id Delete User
+   * @api {patch} api/v1/users/:id Delete User
    * @apiDescription Delete a user
    * @apiVersion 1.0.0
    * @apiName DeleteUser
@@ -195,5 +197,28 @@ router
    */
   .delete(authorize(LOGGED_USER), controller.remove);
 
+router
+  .route('/change-password/:id')
+  /**
+   * @api {get} api/v1/users/change-password/:id Get User
+   * @apiDescription Get user information
+   * @apiVersion 1.0.0
+   * @apiName GetUser
+   * @apiGroup User
+   * @apiPermission user
+   *
+   * @apiHeader {String} Authorization   User's access token
+   *
+   * @apiSuccess {String}  id         User's id
+   * @apiSuccess {String}  name       User's name
+   * @apiSuccess {String}  email      User's email
+   * @apiSuccess {String}  role       User's role
+   * @apiSuccess {Date}    createdAt  Timestamp
+   *
+   * @apiError (Unauthorized 401) Unauthorized Only authenticated users can access the data
+   * @apiError (Forbidden 403)    Forbidden    Only user with same id or admins can access the data
+   * @apiError (Not Found 404)    NotFound     User does not exist
+   */
+  .patch(authorize(LOGGED_USER), validate(changePassword), controller.changePassword);
 
 module.exports = router;

@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const moment = require('moment-timezone');
 const jwt = require('jwt-simple');
 const uuidv4 = require('uuid/v4');
+
 const APIError = require('../utils/APIError');
 const { env, jwtSecret, jwtExpirationInterval } = require('../../config/vars');
 
@@ -36,24 +37,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     maxlength: 128,
     index: true,
-    trim: true,
-  },
-  nationality: {
-    type: String,
-    maxlength: 64,
-    trim: true,
-  },
-  dob: {
-    type: Date,
-  },
-  address: {
-    type: String,
-    maxlength: 255,
-    trim: true,
-  },
-  phone: {
-    type: String,
-    maxlength: 32,
     trim: true,
   },
   services: {
@@ -100,7 +83,7 @@ userSchema.pre('save', async function save(next) {
 userSchema.method({
   transform() {
     const transformed = {};
-    const fields = ['id', 'name', 'email', 'picture', 'role', 'createdAt'];
+    const fields = ['id', 'name', 'email', 'role', 'createdAt', 'updatedAt'];
 
     fields.forEach((field) => {
       transformed[field] = this[field];
@@ -165,6 +148,7 @@ userSchema.statics = {
    */
   async findAndGenerateToken(options) {
     const { email, password, refreshObject } = options;
+
     if (!email) throw new APIError({ message: 'An email is required to generate a token' });
 
     const user = await this.findOne({ email }).exec();
@@ -172,6 +156,7 @@ userSchema.statics = {
       status: httpStatus.UNAUTHORIZED,
       isPublic: true,
     };
+
     if (password) {
       if (user && await user.passwordMatches(password)) {
         return { user, accessToken: user.token() };
@@ -197,12 +182,24 @@ userSchema.statics = {
    * @returns {Promise<User[]>}
    */
   list({
-    page = 1, perPage = 30, name, email, role,
+    page = 1,
+    perPage = 10,
+    sort = 'updatedAt',
+    order = 'desc',
+    search,
   }) {
-    const options = omitBy({ name, email, role }, isNil);
+    let _search = search;
 
-    return this.find(options)
-      .sort({ createdAt: -1 })
+    if (_search) {
+      _search = { $regex: `.*${_search}.*` };
+    }
+
+    const name = omitBy({ name: _search }, isNil);
+    const email = omitBy({ email: _search }, isNil);
+    const role = omitBy({ role: _search }, isNil);
+
+    return this.find({ $or: [name, email, role] })
+      .sort({ [sort]: order === 'desc' ? -1 : 1 })
       .skip(perPage * (page - 1))
       .limit(perPage)
       .exec();

@@ -1,33 +1,39 @@
 const mongoose = require('mongoose');
 const httpStatus = require('http-status');
 const { omitBy, isNil } = require('lodash');
+
 const APIError = require('../utils/APIError');
 
 /**
- * Case Schema
+ * Attendance Schema
  * @private
  */
-const caseSchema = new mongoose.Schema({
-  numberOfCase: {
-    type: Number,
-    required: true,
-  },
-  numberOfDeath: {
-    type: Number,
-    required: true,
-  },
-  numberOfRecovered: {
-    type: Number,
-    required: true,
-  },
-  location: {
-    type: String,
-    required: true,
-  },
-  date: {
+const attendanceSchema = new mongoose.Schema({
+  clockIn: {
     type: Date,
     required: true,
-    unique: true,
+  },
+  clockOut: {
+    type: Date,
+  },
+  workingHour: {
+    type: Number,
+  },
+  isLate: {
+    type: Boolean,
+  },
+  reason: {
+    type: String,
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  updatedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
   },
 }, {
   timestamps: true,
@@ -36,26 +42,26 @@ const caseSchema = new mongoose.Schema({
 /**
  * Statics
  */
-caseSchema.statics = {
+attendanceSchema.statics = {
   /**
-   * Get case
+   * Get attendance
    *
-   * @param {ObjectId} id - The objectId of case.
-   * @returns {Promise<Case, APIError>}
+   * @param {ObjectId} id - The objectId of attendance.
+   * @returns {Promise<Attendance, APIError>}
    */
   async get(id) {
     try {
-      let caseData;
+      let data;
 
       if (mongoose.Types.ObjectId.isValid(id)) {
-        caseData = await this.findById(id).exec();
+        data = await this.findById(id).exec();
       }
-      if (caseData) {
-        return caseData;
+      if (data) {
+        return data;
       }
 
       throw new APIError({
-        message: 'Case does not exist',
+        message: 'Attendance does not exist',
         status: httpStatus.NOT_FOUND,
       });
     } catch (error) {
@@ -64,16 +70,20 @@ caseSchema.statics = {
   },
 
   /**
-   * List cases in descending order of 'createdAt' timestamp.
+   * List attendances in descending order of 'createdAt' timestamp.
    *
    * @param {number} skip - Number of cases to be skipped.
    * @param {number} limit - Limit number of cases to be returned.
    * @returns {Promise<Case[]>}
    */
   list({
-    page = 1, perPage = 30, location, date,
+    page = 1,
+    perPage = 30,
+    clockIn,
+    clockOut,
+    userId,
   }) {
-    const options = omitBy({ location, date }, isNil);
+    const options = omitBy({ clockIn, clockOut, userId }, isNil);
     const data = this.find(options).sort({ createdAt: -1 });
 
     if (perPage > 0) {
@@ -86,6 +96,6 @@ caseSchema.statics = {
 };
 
 /**
- * @typedef Case
+ * @typedef Attendance
  */
-module.exports = mongoose.model('Case', caseSchema);
+module.exports = mongoose.model('Attendance', attendanceSchema);

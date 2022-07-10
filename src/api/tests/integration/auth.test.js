@@ -125,7 +125,7 @@ describe('Authentication API', () => {
     it('should report error when the email provided is not valid', () => {
       user.email = 'this_is_not_an_email';
       return request(app)
-        .post('/v1/auth/register')
+        .post('/v1/register')
         .send(user)
         .expect(httpStatus.BAD_REQUEST)
         .then((res) => {
@@ -140,7 +140,7 @@ describe('Authentication API', () => {
 
     it('should report error when email and password are not provided', () => {
       return request(app)
-        .post('/v1/auth/register')
+        .post('/v1/register')
         .send({})
         .expect(httpStatus.BAD_REQUEST)
         .then((res) => {
@@ -154,10 +154,10 @@ describe('Authentication API', () => {
     });
   });
 
-  describe('POST /v1/auth/login', () => {
+  describe('POST /v1/login', () => {
     it('should return an accessToken and a refreshToken when email and password matches', () => {
       return request(app)
-        .post('/v1/auth/login')
+        .post('/v1/login')
         .send(dbUser)
         .expect(httpStatus.OK)
         .then((res) => {
@@ -171,7 +171,7 @@ describe('Authentication API', () => {
 
     it('should report error when email and password are not provided', () => {
       return request(app)
-        .post('/v1/auth/login')
+        .post('/v1/login')
         .send({})
         .expect(httpStatus.BAD_REQUEST)
         .then((res) => {
@@ -187,7 +187,7 @@ describe('Authentication API', () => {
     it('should report error when the email provided is not valid', () => {
       user.email = 'this_is_not_an_email';
       return request(app)
-        .post('/v1/auth/login')
+        .post('/v1/login')
         .send(user)
         .expect(httpStatus.BAD_REQUEST)
         .then((res) => {
@@ -203,7 +203,7 @@ describe('Authentication API', () => {
     it("should report error when email and password don't match", () => {
       dbUser.password = 'xxx';
       return request(app)
-        .post('/v1/auth/login')
+        .post('/v1/login')
         .send(dbUser)
         .expect(httpStatus.UNAUTHORIZED)
         .then((res) => {
@@ -215,11 +215,11 @@ describe('Authentication API', () => {
     });
   });
 
-  describe('POST /v1/auth/facebook', () => {
+  describe('POST /v1/facebook', () => {
     it('should create a new user and return an accessToken when user does not exist', () => {
       sandbox.stub(authProviders, 'facebook').callsFake(fakeOAuthRequest);
       return request(app)
-        .post('/v1/auth/facebook')
+        .post('/v1/facebook')
         .send({ access_token: '123' })
         .expect(httpStatus.OK)
         .then((res) => {
@@ -235,7 +235,7 @@ describe('Authentication API', () => {
       await User.create(dbUser);
       sandbox.stub(authProviders, 'facebook').callsFake(fakeOAuthRequest);
       return request(app)
-        .post('/v1/auth/facebook')
+        .post('/v1/facebook')
         .send({ access_token: '123' })
         .expect(httpStatus.OK)
         .then((res) => {
@@ -248,7 +248,7 @@ describe('Authentication API', () => {
 
     it('should return error when access_token is not provided', async () => {
       return request(app)
-        .post('/v1/auth/facebook')
+        .post('/v1/facebook')
         .expect(httpStatus.BAD_REQUEST)
         .then((res) => {
           const { field } = res.body.errors[0];
@@ -261,11 +261,11 @@ describe('Authentication API', () => {
     });
   });
 
-  describe('POST /v1/auth/google', () => {
+  describe('POST /v1/google', () => {
     it('should create a new user and return an accessToken when user does not exist', () => {
       sandbox.stub(authProviders, 'google').callsFake(fakeOAuthRequest);
       return request(app)
-        .post('/v1/auth/google')
+        .post('/v1/google')
         .send({ access_token: '123' })
         .expect(httpStatus.OK)
         .then((res) => {
@@ -281,7 +281,7 @@ describe('Authentication API', () => {
       await User.create(dbUser);
       sandbox.stub(authProviders, 'google').callsFake(fakeOAuthRequest);
       return request(app)
-        .post('/v1/auth/google')
+        .post('/v1/google')
         .send({ access_token: '123' })
         .expect(httpStatus.OK)
         .then((res) => {
@@ -294,7 +294,7 @@ describe('Authentication API', () => {
 
     it('should return error when access_token is not provided', async () => {
       return request(app)
-        .post('/v1/auth/google')
+        .post('/v1/google')
         .expect(httpStatus.BAD_REQUEST)
         .then((res) => {
           const { field } = res.body.errors[0];
@@ -307,11 +307,11 @@ describe('Authentication API', () => {
     });
   });
 
-  describe('POST /v1/auth/refresh-token', () => {
+  describe('POST /v1/refresh-token', () => {
     it('should return a new accessToken when refreshToken and email match', async () => {
       await RefreshToken.create(refreshToken);
       return request(app)
-        .post('/v1/auth/refresh-token')
+        .post('/v1/refresh-token')
         .send({ email: dbUser.email, refreshToken: refreshToken.token })
         .expect(httpStatus.OK)
         .then((res) => {
@@ -324,7 +324,7 @@ describe('Authentication API', () => {
     it("should report error when email and refreshToken don't match", async () => {
       await RefreshToken.create(refreshToken);
       return request(app)
-        .post('/v1/auth/refresh-token')
+        .post('/v1/refresh-token')
         .send({ email: user.email, refreshToken: refreshToken.token })
         .expect(httpStatus.UNAUTHORIZED)
         .then((res) => {
@@ -337,7 +337,7 @@ describe('Authentication API', () => {
 
     it('should report error when email and refreshToken are not provided', () => {
       return request(app)
-        .post('/v1/auth/refresh-token')
+        .post('/v1/refresh-token')
         .send({})
         .expect(httpStatus.BAD_REQUEST)
         .then((res) => {
@@ -360,7 +360,7 @@ describe('Authentication API', () => {
       await RefreshToken.create(expiredRefreshToken);
 
       return request(app)
-        .post('/v1/auth/refresh-token')
+        .post('/v1/refresh-token')
         .send({ email: dbUser.email, refreshToken: expiredRefreshToken.token })
         .expect(httpStatus.UNAUTHORIZED)
         .then((res) => {
@@ -369,7 +369,7 @@ describe('Authentication API', () => {
         });
     });
   });
-  describe('POST /v1/auth/send-password-reset', () => {
+  describe('POST /v1/send-password-reset', () => {
     it('should send an email with password reset link when email matches a user', async () => {
       const PasswordResetTokenObj = await PasswordResetToken.create(resetToken);
 
@@ -385,7 +385,7 @@ describe('Authentication API', () => {
         .callsFake(() => Promise.resolve('email sent'));
 
       return request(app)
-        .post('/v1/auth/send-password-reset')
+        .post('/v1/send-password-reset')
         .send({ email: dbUser.email })
         .expect(httpStatus.OK)
         .then((res) => {
@@ -396,7 +396,7 @@ describe('Authentication API', () => {
     it("should report error when email doesn't match a user", async () => {
       await PasswordResetToken.create(resetToken);
       return request(app)
-        .post('/v1/auth/send-password-reset')
+        .post('/v1/send-password-reset')
         .send({ email: user.email })
         .expect(httpStatus.UNAUTHORIZED)
         .then((res) => {
@@ -409,7 +409,7 @@ describe('Authentication API', () => {
 
     it('should report error when email is not provided', () => {
       return request(app)
-        .post('/v1/auth/send-password-reset')
+        .post('/v1/send-password-reset')
         .send({})
         .expect(httpStatus.BAD_REQUEST)
         .then((res) => {
@@ -422,7 +422,7 @@ describe('Authentication API', () => {
         });
     });
   });
-  describe('POST /v1/auth/reset-password', () => {
+  describe('POST /v1/reset-password', () => {
     it('should update password and send confirmation email when email and reset token are valid', async () => {
       await PasswordResetToken.create(resetToken);
 
@@ -431,7 +431,7 @@ describe('Authentication API', () => {
         .callsFake(() => Promise.resolve('email sent'));
 
       return request(app)
-        .post('/v1/auth/reset-password')
+        .post('/v1/reset-password')
         .send({
           email: dbUser.email,
           password: 'updatedPassword2',
@@ -445,7 +445,7 @@ describe('Authentication API', () => {
     it("should report error when email and reset token doesn't match a user", async () => {
       await PasswordResetToken.create(resetToken);
       return request(app)
-        .post('/v1/auth/reset-password')
+        .post('/v1/reset-password')
         .send({
           email: user.email,
           password: 'updatedPassword',
@@ -462,7 +462,7 @@ describe('Authentication API', () => {
 
     it('should report error when email is not provided', () => {
       return request(app)
-        .post('/v1/auth/reset-password')
+        .post('/v1/reset-password')
         .send({ password: 'updatedPassword', resetToken: resetToken.resetToken })
         .expect(httpStatus.BAD_REQUEST)
         .then((res) => {
@@ -476,7 +476,7 @@ describe('Authentication API', () => {
     });
     it('should report error when reset token is not provided', () => {
       return request(app)
-        .post('/v1/auth/reset-password')
+        .post('/v1/reset-password')
         .send({ email: dbUser.email, password: 'updatedPassword' })
         .expect(httpStatus.BAD_REQUEST)
         .then((res) => {
@@ -490,7 +490,7 @@ describe('Authentication API', () => {
     });
     it('should report error when password is not provided', () => {
       return request(app)
-        .post('/v1/auth/reset-password')
+        .post('/v1/reset-password')
         .send({ email: dbUser.email, resetToken: resetToken.resetToken })
         .expect(httpStatus.BAD_REQUEST)
         .then((res) => {
@@ -512,7 +512,7 @@ describe('Authentication API', () => {
       expect(expiredPasswordResetTokenObj.expires).to.be.below(moment().toDate());
 
       return request(app)
-        .post('/v1/auth/reset-password')
+        .post('/v1/reset-password')
         .send({
           email: dbUser.email,
           password: 'updated password',

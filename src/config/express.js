@@ -6,6 +6,7 @@ const methodOverride = require('method-override');
 const cors = require('cors');
 const helmet = require('helmet');
 const passport = require('passport');
+
 const routes = require('../api/routes/v1');
 const { logs } = require('./vars');
 const strategies = require('./passport');
@@ -45,7 +46,7 @@ passport.use('facebook', strategies.facebook);
 passport.use('google', strategies.google);
 
 // mount api v1 routes
-app.use('/v1', routes);
+app.use('/api/v1', routes);
 
 // if error is not an instanceOf APIError, convert it.
 app.use(error.converter);

@@ -1,10 +1,11 @@
 const httpStatus = require('http-status');
+const moment = require('moment-timezone');
+const { omit } = require('lodash');
+
 const User = require('../models/user.model');
 const RefreshToken = require('../models/refreshToken.model');
 const PasswordResetToken = require('../models/passwordResetToken.model');
-const moment = require('moment-timezone');
 const { jwtExpirationInterval } = require('../../config/vars');
-const { omit } = require('lodash');
 const APIError = require('../utils/APIError');
 const emailProvider = require('../services/emails/emailProvider');
 
@@ -33,9 +34,14 @@ exports.register = async (req, res, next) => {
     const userData = omit(req.body, 'role');
     const user = await new User(userData).save();
     const userTransformed = user.transform();
-    const token = generateTokenResponse(user, user.token());
     res.status(httpStatus.CREATED);
-    return res.json({ token, user: userTransformed });
+    return res.json({
+      message: 'User was registered!',
+      success: true,
+      data: {
+        user: userTransformed,
+      },
+    });
   } catch (error) {
     return next(User.checkDuplicateEmail(error));
   }
@@ -50,7 +56,14 @@ exports.login = async (req, res, next) => {
     const { user, accessToken } = await User.findAndGenerateToken(req.body);
     const token = generateTokenResponse(user, accessToken);
     const userTransformed = user.transform();
-    return res.json({ token, user: userTransformed });
+    return res.json({
+      message: 'Login successfully!',
+      success: true,
+      data: {
+        token,
+        user: userTransformed,
+      },
+    });
   } catch (error) {
     return next(error);
   }
@@ -67,7 +80,14 @@ exports.oAuth = async (req, res, next) => {
     const accessToken = user.token();
     const token = generateTokenResponse(user, accessToken);
     const userTransformed = user.transform();
-    return res.json({ token, user: userTransformed });
+    return res.json({
+      message: 'Login successfully!',
+      success: true,
+      data: {
+        token,
+        user: userTransformed,
+      },
+    });
   } catch (error) {
     return next(error);
   }
