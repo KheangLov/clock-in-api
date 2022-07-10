@@ -1,7 +1,7 @@
 const Joi = require('joi');
 
 module.exports = {
-  // POST /api/v1/auth/register
+  // POST /api/v1/register
   register: {
     body: {
       email: Joi.string()
@@ -14,7 +14,7 @@ module.exports = {
     },
   },
 
-  // POST /api/v1/auth/login
+  // POST /api/v1/login
   login: {
     body: {
       email: Joi.string()
@@ -27,15 +27,15 @@ module.exports = {
     },
   },
 
-  // POST /api/v1/auth/facebook
-  // POST /api/v1/auth/google
+  // POST /api/v1/facebook
+  // POST /api/v1/google
   oAuth: {
     body: {
       access_token: Joi.string().required(),
     },
   },
 
-  // POST /api/v1/auth/refresh
+  // POST /api/v1/refresh
   refresh: {
     body: {
       email: Joi.string()
@@ -45,7 +45,7 @@ module.exports = {
     },
   },
 
-  // POST /api/v1/auth/refresh
+  // POST /api/v1/refresh
   sendPasswordReset: {
     body: {
       email: Joi.string()
@@ -54,7 +54,7 @@ module.exports = {
     },
   },
 
-  // POST /api/v1/auth/password-reset
+  // POST /api/v1/password-reset
   passwordReset: {
     body: {
       email: Joi.string()
