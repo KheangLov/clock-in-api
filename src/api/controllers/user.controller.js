@@ -83,10 +83,11 @@ exports.replace = async (req, res, next) => {
  */
 exports.update = async (req, res, next) => {
   try {
-    const ommits = req.locals.user.role !== 'admin' ? ['role'] : [];
+    const { role } = req.locals.user;
+    let ommits = role !== 'admin' ? ['role'] : [];
 
     if (req.locals._id.toString() === req.user._id.toString()) {
-      ommits.push('email');
+      ommits = ['email', 'role'];
     }
 
     const updatedUser = omit(req.body, ommits);
