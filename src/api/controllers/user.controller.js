@@ -158,7 +158,7 @@ exports.remove = async (req, res, next) => {
     if (user._id === req.user._id) {
       res.status(httpStatus.FORBIDDEN);
 
-      throw new Error('Can not remove current user!');
+      throw new APIError({ message: 'Can not remove current user!' });
     }
 
     await user.remove();
