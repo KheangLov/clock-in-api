@@ -134,12 +134,9 @@ exports.list = async (req, res, next) => {
     const users = await User.list(req.query);
     const total = await User.countData(req.query);
     const transformedUsers = users.map(user => user.transform());
-    let current = 1;
-    let perPage = 10;
     const { page, perPage: size } = req.query;
-
-    current = page;
-    perPage = size;
+    const current = page || 1;
+    const perPage = size || 10;
 
     return res.json({
       data: transformedUsers,
