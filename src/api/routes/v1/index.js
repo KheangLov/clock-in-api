@@ -19,6 +19,6 @@ router.use('/docs', express.static('docs'));
 router.use('/', authRoutes);
 
 router.use('/users', userRoutes);
-router.use('/attendance', attendanceRoutes);
+router.use('/attendances', attendanceRoutes);
 
 module.exports = router;
