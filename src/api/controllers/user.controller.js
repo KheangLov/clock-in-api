@@ -132,12 +132,13 @@ exports.changePassword = async (req, res, next) => {
 exports.list = async (req, res, next) => {
   try {
     const users = await User.list(req.query);
+    const userCount = await User.count(req.query);
     const transformedUsers = users.map(user => user.transform());
     const { page, perPage } = req.query;
     return res.json({
       data: transformedUsers,
       meta: {
-        total: transformedUsers.length,
+        total: userCount,
         current: page,
         perPage,
       },

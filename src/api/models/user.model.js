@@ -205,6 +205,20 @@ userSchema.statics = {
       .exec();
   },
 
+  count({ search }) {
+    let _search = search;
+
+    if (_search) {
+      _search = { $regex: `.*${_search}.*` };
+    }
+
+    const name = omitBy({ name: _search }, isNil);
+    const email = omitBy({ email: _search }, isNil);
+    const role = omitBy({ role: _search }, isNil);
+
+    return this.count({ $or: [name, email, role] }).exec();
+  },
+
   /**
    * Return new validation error
    * if error is a mongoose duplicate key error
