@@ -39,7 +39,12 @@ exports.create = async (req, res, next) => {
     const user = new User(req.body);
     const savedUser = await user.save();
     res.status(httpStatus.CREATED);
-    return res.json(savedUser.transform());
+
+    return res.json({
+      message: 'User created successfully!',
+      success: true,
+      data: res.json(savedUser.transform()),
+    });
   } catch (error) {
     return next(User.checkDuplicateEmail(error));
   }
