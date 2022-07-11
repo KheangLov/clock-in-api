@@ -18,6 +18,7 @@ module.exports = {
     body: {
       clockIn: Joi.date().required(),
       clockOut: Joi.date(),
+      isLate: Joi.boolean(),
       reason: Joi.string(),
     },
   },

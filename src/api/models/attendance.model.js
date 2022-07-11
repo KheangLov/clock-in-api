@@ -56,6 +56,7 @@ attendanceSchema.statics = {
       if (mongoose.Types.ObjectId.isValid(id)) {
         data = await this.findById(id).exec();
       }
+
       if (data) {
         return data;
       }

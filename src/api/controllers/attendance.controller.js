@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { omit } = require('lodash');
+const { omit, pick } = require('lodash');
 
 const Attendance = require('../models/attendance.model');
 
@@ -23,6 +23,24 @@ exports.create = async (req, res, next) => {
     const savedAttendance = await data.save();
     res.status(httpStatus.CREATED);
     return res.json(savedAttendance);
+  } catch (error) {
+    return next(error);
+  }
+};
+
+exports.clockIn = async (req, res, next) => {
+  try {
+    const body = pick(req.body, ['clockIn', 'isLate', 'reason']);
+    body.userId = req.user._id;
+    const attendance = new Attendance(body);
+    const data = await attendance.save();
+    res.status(httpStatus.CREATED);
+
+    return res.json({
+      message: 'You have been successfully clocked-in!',
+      success: true,
+      data,
+    });
   } catch (error) {
     return next(error);
   }
