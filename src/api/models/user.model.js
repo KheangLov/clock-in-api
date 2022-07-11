@@ -197,15 +197,16 @@ userSchema.statics = {
     const name = omitBy({ name: _search }, isNil);
     const email = omitBy({ email: _search }, isNil);
     const role = omitBy({ role: _search }, isNil);
+    const _conditions = { $or: [name, email, role] };
 
-    return this.find({ $or: [name, email, role] })
+    return this.find(_conditions)
       .sort({ [sort]: order === 'desc' ? -1 : 1 })
       .skip(perPage * (page - 1))
       .limit(perPage)
       .exec();
   },
 
-  count({ search }) {
+  countData({ search }) {
     let _search = search;
 
     if (_search) {
@@ -215,8 +216,10 @@ userSchema.statics = {
     const name = omitBy({ name: _search }, isNil);
     const email = omitBy({ email: _search }, isNil);
     const role = omitBy({ role: _search }, isNil);
+    const _conditions = { $or: [name, email, role] };
 
-    return this.count({ $or: [name, email, role] }).exec();
+    return this.countDocuments(_conditions)
+      .exec();
   },
 
   /**
