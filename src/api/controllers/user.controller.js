@@ -43,7 +43,7 @@ exports.create = async (req, res, next) => {
     return res.json({
       message: 'User created successfully!',
       success: true,
-      data: res.json(savedUser.transform()),
+      data: savedUser.transform(),
     });
   } catch (error) {
     return next(User.checkDuplicateEmail(error));
@@ -155,7 +155,7 @@ exports.remove = async (req, res, next) => {
   try {
     const { user } = req.locals;
 
-    if (user._id === req.user._id) {
+    if (user._id.toString() === req.user._id.toString()) {
       res.status(httpStatus.FORBIDDEN);
 
       throw new APIError({ message: 'Can not remove current user!' });
@@ -166,7 +166,7 @@ exports.remove = async (req, res, next) => {
 
     return res.json({
       message: 'User have been removed successfully!',
-      success: false,
+      success: true,
     });
   } catch (error) {
     return next(error);
