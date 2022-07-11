@@ -31,9 +31,15 @@ exports.create = async (req, res, next) => {
 exports.clockIn = async (req, res, next) => {
   try {
     const body = pick(req.body, ['clockIn', 'isLate', 'reason']);
-    body.userId = req.user._id;
+    const { _id } = req.user;
+
+    body.userId = _id;
+    body.updatedBy = _id;
+
     const attendance = new Attendance(body);
-    const data = await attendance.save();
+    const att = await attendance.save();
+    const data = att.transform();
+
     res.status(httpStatus.CREATED);
 
     return res.json({
