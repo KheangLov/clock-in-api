@@ -154,5 +154,33 @@ router
    */
   .delete(authorize(LOGGED_USER), controller.remove);
 
+router
+  .route('/clock-in')
+  /**
+   * @api {post} api/v1/attendances/clock-in Create Attendance
+   * @apiDescription Create a new attendance
+   * @apiVersion 1.0.0
+   * @apiName CreateAttendance
+   * @apiGroup Attendance
+   * @apiPermission admin
+   *
+   * @apiHeader {String} Authorization   User's access token
+   *
+   * @apiParam  {Date}  clockIn         Attendance's clockIn
+   * @apiParam  {Date}  clockOut        Attendance's clockOut
+   * @apiParam  {String}    reason      Attendance's reason
+   * @apiParam  {Boolean}    isLate      Attendance's late
+   *
+   * @apiSuccess (Created 201) {Date}  clockIn         Attendance's clockIn
+   * @apiSuccess (Created 201) {Date}  clockOut        Attendance's clockOut
+   * @apiSuccess (Created 201) {Number}  workingHour    Attendance's workingHour
+   * @apiSuccess (Created 201) {Boolean}  isLate             Attendance's isLate
+   * @apiSuccess (Created 201) {String}    reason                 Attendance's reason
+   *
+   * @apiError (Bad Request 400)   ValidationError  Some parameters may contain invalid values
+   * @apiError (Unauthorized 401)  Unauthorized     Only authenticated users can create the data
+   * @apiError (Forbidden 403)     Forbidden        Only admins can create the data
+   */
+  .post(authorize(LOGGED_USER), validate(createAttendance), controller.clockIn);
 
 module.exports = router;
