@@ -83,8 +83,13 @@ exports.replace = async (req, res, next) => {
  */
 exports.update = async (req, res, next) => {
   try {
-    const ommitRole = req.locals.user.role !== 'admin' ? 'role' : '';
-    const updatedUser = omit(req.body, ommitRole);
+    const ommits = req.locals.user.role !== 'admin' ? ['role'] : [];
+
+    if (req.locals._id.toString() === req.user._id.toString()) {
+      ommits.push('email');
+    }
+
+    const updatedUser = omit(req.body, ommits);
     const user = Object.assign(req.locals.user, updatedUser);
 
     const savedUser = await user.save();
