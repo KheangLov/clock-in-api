@@ -166,7 +166,7 @@ exports.remove = async (req, res, next) => {
     }
 
     await user.remove();
-    res.status(httpStatus[200]);
+    res.status(httpStatus.OK);
 
     return res.json({
       message: 'User have been removed successfully!',
