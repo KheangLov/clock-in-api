@@ -151,10 +151,24 @@ exports.list = async (req, res, next) => {
  * Delete user
  * @public
  */
-exports.remove = (req, res, next) => {
-  const { user } = req.locals;
+exports.remove = async (req, res, next) => {
+  try {
+    const { user } = req.locals;
 
-  user.remove()
-    .then(() => res.status(httpStatus.NO_CONTENT).end())
-    .catch(e => next(e));
+    if (user._id === req.user._id) {
+      res.status(httpStatus.FORBIDDEN);
+
+      throw new Error('Can not remove current user!');
+    }
+
+    await user.remove();
+    res.status(httpStatus.NO_CONTENT);
+
+    return res.json({
+      message: 'User have been removed successfully!',
+      success: false,
+    });
+  } catch (error) {
+    return next(error);
+  }
 };
