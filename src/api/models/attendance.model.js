@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const httpStatus = require('http-status');
 const moment = require('moment-timezone');
-const { omitBy, isNil, omit } = require('lodash');
+const { omitBy, isNil, pick } = require('lodash');
 
 const APIError = require('../utils/APIError');
 
@@ -72,11 +72,18 @@ attendanceSchema.statics = {
   },
 
   async getBy(param) {
-    const _param = omit(param, ['clockIn', 'userId']);
-    _param.clockIn = moment().format('YYYY-MM-DD');
-    const data = await this.findOne(_param).exec();
+    try {
+      const _param = pick(param, ['clockIn', 'userId']);
+      _param.clockIn = {
+        $gte: moment(_param.clockIn).format('YYYY-MM-DD'),
+        $lte: moment().add(1, 'day').utc().format('YYYY-MM-DD'),
+      };
+      const data = await this.findOne(_param).exec();
 
-    return data;
+      return data;
+    } catch (error) {
+      throw error;
+    }
   },
 
   /**

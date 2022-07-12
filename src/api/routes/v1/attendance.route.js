@@ -155,9 +155,9 @@ router
   .delete(authorize(LOGGED_USER), controller.remove);
 
 router
-  .route('/check-attendance')
+  .route('/check')
   /**
-   * @api {post} api/v1/attendances/check-attendance Attendance
+   * @api {post} api/v1/attendances/check Attendance
    * @apiDescription Create a new attendance
    * @apiVersion 1.0.0
    * @apiName CreateAttendance
@@ -181,7 +181,7 @@ router
    * @apiError (Unauthorized 401)  Unauthorized     Only authenticated users can create the data
    * @apiError (Forbidden 403)     Forbidden        Only admins can create the data
    */
-  .get(authorize(LOGGED_USER), validate(createAttendance), controller.checkAttendance);
+  .post(authorize(LOGGED_USER), controller.checkAttendance);
 
 router
   .route('/clock-in')
