@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const httpStatus = require('http-status');
-const { omitBy, isNil } = require('lodash');
+const moment = require('moment-timezone');
+const { omitBy, isNil, omit } = require('lodash');
 
 const APIError = require('../utils/APIError');
 
@@ -56,6 +57,25 @@ attendanceSchema.statics = {
       if (mongoose.Types.ObjectId.isValid(id)) {
         data = await this.findById(id).exec();
       }
+
+      if (data) {
+        return data;
+      }
+
+      throw new APIError({
+        message: 'Attendance does not exist',
+        status: httpStatus.NOT_FOUND,
+      });
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  async getBy(param) {
+    try {
+      const _param = omit(param, ['clockIn', 'userId']);
+      _param.clockIn = moment().format('YYYY-MM-DD');
+      const data = await this.findOne(_param).exec();
 
       if (data) {
         return data;

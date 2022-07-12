@@ -16,7 +16,7 @@ module.exports = {
   // POST /api/v1/attendances
   createAttendance: {
     body: {
-      clockIn: Joi.date().required(),
+      clockIn: Joi.date(),
       clockOut: Joi.date(),
       isLate: Joi.boolean(),
       reason: Joi.string(),

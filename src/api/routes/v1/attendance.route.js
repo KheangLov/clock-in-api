@@ -155,6 +155,35 @@ router
   .delete(authorize(LOGGED_USER), controller.remove);
 
 router
+  .route('/check-attendance')
+  /**
+   * @api {post} api/v1/attendances/check-attendance Attendance
+   * @apiDescription Create a new attendance
+   * @apiVersion 1.0.0
+   * @apiName CreateAttendance
+   * @apiGroup Attendance
+   * @apiPermission admin
+   *
+   * @apiHeader {String} Authorization   User's access token
+   *
+   * @apiParam  {Date}  clockIn         Attendance's clockIn
+   * @apiParam  {Date}  clockOut        Attendance's clockOut
+   * @apiParam  {String}    reason      Attendance's reason
+   * @apiParam  {Boolean}    isLate      Attendance's late
+   *
+   * @apiSuccess (Created 201) {Date}  clockIn         Attendance's clockIn
+   * @apiSuccess (Created 201) {Date}  clockOut        Attendance's clockOut
+   * @apiSuccess (Created 201) {Number}  workingHour    Attendance's workingHour
+   * @apiSuccess (Created 201) {Boolean}  isLate             Attendance's isLate
+   * @apiSuccess (Created 201) {String}    reason                 Attendance's reason
+   *
+   * @apiError (Bad Request 400)   ValidationError  Some parameters may contain invalid values
+   * @apiError (Unauthorized 401)  Unauthorized     Only authenticated users can create the data
+   * @apiError (Forbidden 403)     Forbidden        Only admins can create the data
+   */
+  .get(authorize(LOGGED_USER), validate(createAttendance), controller.checkAttendance);
+
+router
   .route('/clock-in')
   /**
    * @api {post} api/v1/attendances/clock-in Create Attendance
@@ -182,5 +211,37 @@ router
    * @apiError (Forbidden 403)     Forbidden        Only admins can create the data
    */
   .post(authorize(LOGGED_USER), validate(createAttendance), controller.clockIn);
+
+router
+  .route('/clock-out')
+  /**
+   * @api {patch} api/v1/attendances/clock-out/:id Update Attendance
+   * @apiDescription Update some fields of a attendance document
+   * @apiVersion 1.0.0
+   * @apiName UpdateAttendance
+   * @apiGroup Attendance
+   * @apiPermission user
+   *
+   * @apiHeader {String} Authorization   User's access token
+   *
+   * @apiParam  {Date}  clockIn         Attendance's clockIn
+   * @apiParam  {Date}  clockOut        Attendance's clockOut
+   * @apiParam  {Number}  workingHour   Attendance's workingHour
+   * @apiParam  {Boolean}  isLate       Attendance's isLate
+   * @apiParam  {String}    reason      Attendance's reason
+   *
+   * @apiSuccess {Date}  clockIn         Attendance's clockIn
+   * @apiSuccess {Date}  clockOut        Attendance's clockOut
+   * @apiSuccess {Number}  workingHour    Attendance's workingHour
+   * @apiSuccess {Boolean}  isLate             Attendance's isLate
+   * @apiSuccess {String}    reason                 Attendance's reason
+   *
+   * @apiError (Bad Request 400)  ValidationError  Some parameters may contain invalid values
+   * @apiError (Unauthorized 401) Unauthorized Only authenticated users can modify the data
+   * @apiError (Forbidden 403)    Forbidden
+   *            Only attendance with same id or admins can modify the data
+   * @apiError (Not Found 404)    NotFound     Attendance does not exist
+   */
+  .patch(authorize(LOGGED_USER), validate(updateAttendance), controller.clockOut);
 
 module.exports = router;

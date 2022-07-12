@@ -2,6 +2,7 @@ const httpStatus = require('http-status');
 const { omit, pick } = require('lodash');
 
 const Attendance = require('../models/attendance.model');
+const APIError = require('../utils/APIError');
 
 /**
  * Get attendance
@@ -36,6 +37,12 @@ exports.clockIn = async (req, res, next) => {
     body.userId = _id;
     body.updatedBy = _id;
 
+    const find = await Attendance.getBy(body);
+
+    if (find) {
+      throw new APIError({ message: 'Can not clocked-in, you are already clocked-in for today!' });
+    }
+
     const attendance = new Attendance(body);
     const att = await attendance.save();
     const data = att.transform();
@@ -44,6 +51,51 @@ exports.clockIn = async (req, res, next) => {
 
     return res.json({
       message: 'You have been successfully clocked-in!',
+      success: true,
+      data,
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+exports.clockOut = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const body = pick(req.body, ['clockOut']);
+    const { _id } = req.user;
+
+    body.updatedBy = _id;
+
+    const find = await Attendance.get(id);
+    const updateData = Object.assign(find, body);
+    const att = await updateData.save();
+    const data = att.transform();
+
+    res.status(httpStatus.CREATED);
+
+    return res.json({
+      message: 'You have been successfully clocked-out!',
+      success: true,
+      data,
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+exports.checkAttendance = async (req, res, next) => {
+  try {
+    const body = pick(req.body, ['clockIn', 'isLate', 'reason']);
+    const { _id } = req.user;
+
+    body.userId = _id;
+    body.updatedBy = _id;
+
+    const data = await Attendance.getBy(body);
+
+    return res.json({
+      message: 'Data!',
       success: true,
       data,
     });
