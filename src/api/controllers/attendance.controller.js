@@ -34,14 +34,18 @@ exports.create = async (req, res, next) => {
 
 exports.clockIn = async (req, res, next) => {
   try {
-    const _mainTime = moment('810', 'hmm').format('HH:mm');
+    const _now = moment().format('YYYY-MM-DD');
+    const _mainTime = moment(`${_now} 08:10:00`).local();
     const body = pick(req.body, ['clockIn', 'isLate', 'reason']);
     const { _id } = req.user;
 
     body.userId = _id;
     body.updatedBy = _id;
 
-    if (_mainTime > body.clockIn.format('HH:mm')) {
+    const _clockedTime = moment(body.clockIn).local();
+    const _durations = moment.duration(_clockedTime.diff(_mainTime));
+
+    if (_durations.asMinutes() < 0) {
       body.isLate = true;
     }
 
