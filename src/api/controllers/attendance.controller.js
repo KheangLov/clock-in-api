@@ -68,7 +68,8 @@ exports.clockOut = async (req, res, next) => {
     body.updatedBy = _id;
 
     const find = await Attendance.get(id);
-    const _duration = moment._duration(body.clockOut.diff(find.clockIn));
+    const _clockOut = moment(body.clockOut);
+    const _duration = moment.duration(_clockOut.diff(find.clockIn));
     body.workingHour = _duration.asHours();
     const updateData = Object.assign(find, body);
     const att = await updateData.save();

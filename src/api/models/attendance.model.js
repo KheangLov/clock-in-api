@@ -122,7 +122,7 @@ attendanceSchema.statics = {
 attendanceSchema.method({
   transform() {
     const transformed = {};
-    const fields = ['id', 'clockIn', 'clockOut', 'isLate', 'reason', 'userId', 'updatedBy', 'createdAt', 'updatedAt'];
+    const fields = ['id', 'clockIn', 'clockOut', 'workingHour', 'isLate', 'reason', 'userId', 'updatedBy', 'createdAt', 'updatedAt'];
 
     fields.forEach((field) => {
       transformed[field] = this[field];
