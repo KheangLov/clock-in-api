@@ -72,22 +72,11 @@ attendanceSchema.statics = {
   },
 
   async getBy(param) {
-    try {
-      const _param = omit(param, ['clockIn', 'userId']);
-      _param.clockIn = moment().format('YYYY-MM-DD');
-      const data = await this.findOne(_param).exec();
+    const _param = omit(param, ['clockIn', 'userId']);
+    _param.clockIn = moment().format('YYYY-MM-DD');
+    const data = await this.findOne(_param).exec();
 
-      if (data) {
-        return data;
-      }
-
-      throw new APIError({
-        message: 'Attendance does not exist',
-        status: httpStatus.NOT_FOUND,
-      });
-    } catch (error) {
-      throw error;
-    }
+    return data;
   },
 
   /**
