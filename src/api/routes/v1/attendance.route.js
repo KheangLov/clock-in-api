@@ -213,7 +213,7 @@ router
   .post(authorize(), validate(createAttendance), controller.clockIn);
 
 router
-  .route('/clock-out')
+  .route('/clock-out/:id')
   /**
    * @api {patch} api/v1/attendances/clock-out/:id Update Attendance
    * @apiDescription Update some fields of a attendance document
