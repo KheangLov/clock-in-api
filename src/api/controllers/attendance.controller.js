@@ -34,11 +34,16 @@ exports.create = async (req, res, next) => {
 
 exports.clockIn = async (req, res, next) => {
   try {
+    const _mainTime = moment('810', 'hmm').format('HH:mm');
     const body = pick(req.body, ['clockIn', 'isLate', 'reason']);
     const { _id } = req.user;
 
     body.userId = _id;
     body.updatedBy = _id;
+
+    if (_mainTime > body.clockIn.format('HH:mm')) {
+      body.isLate = true;
+    }
 
     const find = await Attendance.getBy(body);
     if (find) {
