@@ -1,5 +1,6 @@
 const httpStatus = require('http-status');
-const { omit, pick } = require('lodash');
+const moment = require('moment-timezone');
+const { omit, pick, map } = require('lodash');
 
 const Attendance = require('../models/attendance.model');
 const APIError = require('../utils/APIError');
@@ -38,7 +39,6 @@ exports.clockIn = async (req, res, next) => {
     body.updatedBy = _id;
 
     const find = await Attendance.getBy(body);
-    console.log(find);
     if (find) {
       throw new APIError({ message: 'Can not clocked-in, you are already clocked-in for today!' });
     }
@@ -68,6 +68,8 @@ exports.clockOut = async (req, res, next) => {
     body.updatedBy = _id;
 
     const find = await Attendance.get(id);
+    const _duration = moment._duration(body.clockOut.diff(find.clockIn));
+    body.workingHour = _duration.asHours();
     const updateData = Object.assign(find, body);
     const att = await updateData.save();
     const data = att.transform();
@@ -91,7 +93,8 @@ exports.checkAttendance = async (req, res, next) => {
 
     body.userId = _id;
 
-    const data = await Attendance.getBy(body);
+    const att = await Attendance.getBy(body);
+    const data = att.transform();
 
     return res.json({
       message: 'Data!',
@@ -145,7 +148,8 @@ exports.list = async (req, res, next) => {
     const _param = pick(req.query, ['clockIn', 'clockOut']);
     const { _id } = req.user;
     _param.userId = _id;
-    const data = await Attendance.list(_param);
+    const attandances = await Attendance.list(_param);
+    const data = map(attandances, attandance => attandance.transform());
     const total = await Attendance.countData(_param);
     const { page, perPage: size } = req.query;
     const current = page || 1;
