@@ -75,9 +75,10 @@ attendanceSchema.statics = {
     try {
       const _param = pick(param, ['clockIn', 'userId']);
       _param.clockIn = {
-        $gte: moment(_param.clockIn).format('YYYY-MM-DD'),
+        $gte: moment().format('YYYY-MM-DD'),
         $lte: moment().add(1, 'day').utc().format('YYYY-MM-DD'),
       };
+      console.log(_param);
       const data = await this.findOne(_param).exec();
 
       return data;

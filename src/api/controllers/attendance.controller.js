@@ -38,7 +38,7 @@ exports.clockIn = async (req, res, next) => {
     body.updatedBy = _id;
 
     const find = await Attendance.getBy(body);
-
+    console.log(find);
     if (find) {
       throw new APIError({ message: 'Can not clocked-in, you are already clocked-in for today!' });
     }
