@@ -1,6 +1,8 @@
 const httpStatus = require('http-status');
 const moment = require('moment-timezone');
-const { omit, pick, map } = require('lodash');
+const {
+  omit, pick, map, parseInt,
+} = require('lodash');
 
 const Attendance = require('../models/attendance.model');
 const APIError = require('../utils/APIError');
@@ -70,7 +72,7 @@ exports.clockOut = async (req, res, next) => {
     const find = await Attendance.get(id);
     const _clockOut = moment(body.clockOut);
     const _duration = moment.duration(_clockOut.diff(find.clockIn));
-    body.workingHour = _duration.asHours();
+    body.workingHour = parseInt(_duration.asHours());
     const updateData = Object.assign(find, body);
     const att = await updateData.save();
     const data = att.transform();
