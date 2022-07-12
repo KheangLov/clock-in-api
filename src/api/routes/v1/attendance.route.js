@@ -181,7 +181,7 @@ router
    * @apiError (Unauthorized 401)  Unauthorized     Only authenticated users can create the data
    * @apiError (Forbidden 403)     Forbidden        Only admins can create the data
    */
-  .post(authorize(LOGGED_USER), controller.checkAttendance);
+  .post(authorize(), controller.checkAttendance);
 
 router
   .route('/clock-in')
@@ -210,7 +210,7 @@ router
    * @apiError (Unauthorized 401)  Unauthorized     Only authenticated users can create the data
    * @apiError (Forbidden 403)     Forbidden        Only admins can create the data
    */
-  .post(authorize(LOGGED_USER), validate(createAttendance), controller.clockIn);
+  .post(authorize(), validate(createAttendance), controller.clockIn);
 
 router
   .route('/clock-out')
@@ -242,6 +242,6 @@ router
    *            Only attendance with same id or admins can modify the data
    * @apiError (Not Found 404)    NotFound     Attendance does not exist
    */
-  .patch(authorize(LOGGED_USER), validate(updateAttendance), controller.clockOut);
+  .patch(authorize(), validate(updateAttendance), controller.clockOut);
 
 module.exports = router;
