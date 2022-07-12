@@ -86,6 +86,12 @@ attendanceSchema.statics = {
     }
   },
 
+  countData({ clockIn, clockOut, userId }) {
+    const options = omitBy({ clockIn, clockOut, userId }, isNil);
+
+    return this.countDocuments(options).exec();
+  },
+
   /**
    * List attendances in descending order of 'createdAt' timestamp.
    *
@@ -96,18 +102,19 @@ attendanceSchema.statics = {
   list({
     page = 1,
     perPage = 30,
+    sort = 'updatedAt',
+    order = 'desc',
     clockIn,
     clockOut,
     userId,
   }) {
     const options = omitBy({ clockIn, clockOut, userId }, isNil);
-    const data = this.find(options).sort({ createdAt: -1 });
 
-    if (perPage > 0) {
-      data.skip(perPage * (page - 1)).limit(perPage);
-    }
-
-    return data.exec();
+    return this.find(options)
+      .sort({ [sort]: order === 'desc' ? -1 : 1 })
+      .skip(perPage * (page - 1))
+      .limit(perPage)
+      .exec();
   },
 
 };

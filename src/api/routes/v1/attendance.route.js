@@ -30,7 +30,7 @@ router
    * @apiSuccess {Object[]} List of attendances.
    *
    */
-  .get(validate(listAttendances), controller.list)
+  .get(authorize(), validate(listAttendances), controller.list)
   /**
    * @api {post} api/v1/attendances Create Attendance
    * @apiDescription Create a new attendance

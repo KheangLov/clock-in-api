@@ -143,10 +143,23 @@ exports.update = async (req, res, next) => {
  */
 exports.list = async (req, res, next) => {
   try {
-    const data = await Attendance.list(req.query);
-    const totalEntries = await Attendance.count();
-    const totalPages = Math.ceil(totalEntries / req.query.perPage || 10);
-    return res.json({ data, totalEntries, totalPages });
+    const _param = pick(req.query, ['clockIn', 'clockOut']);
+    const { _id } = req.user;
+    _param.userId = _id;
+    const data = await Attendance.list(_param);
+    const total = await Attendance.countData(_param);
+    const { page, perPage: size } = req.query;
+    const current = page || 1;
+    const perPage = size || 10;
+
+    return res.json({
+      data,
+      meta: {
+        total,
+        current,
+        perPage,
+      },
+    });
   } catch (error) {
     return next(error);
   }
