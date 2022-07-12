@@ -86,11 +86,10 @@ exports.clockOut = async (req, res, next) => {
 
 exports.checkAttendance = async (req, res, next) => {
   try {
-    const body = pick(req.body, ['clockIn', 'isLate', 'reason']);
+    const body = pick(req.body, ['clockIn']);
     const { _id } = req.user;
 
     body.userId = _id;
-    body.updatedBy = _id;
 
     const data = await Attendance.getBy(body);
 
